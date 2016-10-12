@@ -1,11 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCarsConsole", "PCarsConsole\PCarsConsole.csproj", "{81DA8301-313B-45DE-B8CF-07098CC5D546}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCarsUI", "PCarsUI\PCarsUI.csproj", "{7BC84C3B-D1B8-4ABF-93BB-D1D8F479F9E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectCars.Reader", "ProjectCars.Reader\ProjectCars.Reader.csproj", "{A495BA6A-F4DC-4D9F-AF96-A89FBC8C9BCE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Legacy", "Legacy", "{15411A50-3B6C-45AD-BFE6-41C08634D7F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectCars.Shared", "ProjectCars.Shared\ProjectCars.Shared.csproj", "{E9074B5F-D59A-4B88-ACBC-AB244D291F3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectCars.ConsoleListener", "ProjectCars.ConsoleListener\ProjectCars.ConsoleListener.csproj", "{B9CB0501-E3CB-4CFC-8A65-4B2A3C863EB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +29,24 @@ Global
 		{7BC84C3B-D1B8-4ABF-93BB-D1D8F479F9E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BC84C3B-D1B8-4ABF-93BB-D1D8F479F9E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BC84C3B-D1B8-4ABF-93BB-D1D8F479F9E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A495BA6A-F4DC-4D9F-AF96-A89FBC8C9BCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A495BA6A-F4DC-4D9F-AF96-A89FBC8C9BCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A495BA6A-F4DC-4D9F-AF96-A89FBC8C9BCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A495BA6A-F4DC-4D9F-AF96-A89FBC8C9BCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9074B5F-D59A-4B88-ACBC-AB244D291F3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9074B5F-D59A-4B88-ACBC-AB244D291F3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9074B5F-D59A-4B88-ACBC-AB244D291F3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9074B5F-D59A-4B88-ACBC-AB244D291F3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9CB0501-E3CB-4CFC-8A65-4B2A3C863EB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9CB0501-E3CB-4CFC-8A65-4B2A3C863EB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9CB0501-E3CB-4CFC-8A65-4B2A3C863EB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9CB0501-E3CB-4CFC-8A65-4B2A3C863EB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{81DA8301-313B-45DE-B8CF-07098CC5D546} = {15411A50-3B6C-45AD-BFE6-41C08634D7F0}
+		{7BC84C3B-D1B8-4ABF-93BB-D1D8F479F9E7} = {15411A50-3B6C-45AD-BFE6-41C08634D7F0}
 	EndGlobalSection
 EndGlobal
