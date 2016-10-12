@@ -17,7 +17,8 @@ namespace ProjectCars.ConsoleListener
             listener.StartListening();
 
             var stopwatch = new Stopwatch();
-            listener.Callback = (p =>
+
+            listener.OnTelemetryDataReceived = (p =>
             {
                 stopwatch.Restart();
                 var s = Newtonsoft.Json.JsonConvert.SerializeObject(p, Newtonsoft.Json.Formatting.None);

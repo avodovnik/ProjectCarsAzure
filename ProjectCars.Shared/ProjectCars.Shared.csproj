@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Configuration.cs" />
     <Compile Include="ParticipantInfo.cs" />
+    <Compile Include="ParticipantInfoStrings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TelemetryData.cs" />
   </ItemGroup>

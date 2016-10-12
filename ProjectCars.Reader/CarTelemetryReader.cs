@@ -23,7 +23,9 @@ namespace ProjectCars.Reader
             _client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
         }
 
-        public Action<TelemetryData> Callback { get; set; }
+        public Action<TelemetryData> OnTelemetryDataReceived { get; set; }
+        public Action<ParticipantInfoStrings> OnParticipantInfoStringsReceived { get; set; }
+        public Action<ParticipantInfoStringsAdditional> OnParticipantInfoStringsAdditionalReceived { get; set; }
 
         public void StartListening()
         {
@@ -109,20 +111,23 @@ namespace ProjectCars.Reader
             Console.WriteLine("Telemetry packet received: {0}, total packet count: {1}", telemetryData.sThrottle, _statistics._telemetryPacketCount);
 
             // do something with this packet
-            if(Callback != null)
-            {
-                Callback(telemetryData);
-            }
+            OnTelemetryDataReceived?.Invoke(telemetryData);
         }
 
         private void ProcessPacketAsAdditionalParticipantInfo(byte[] packet)
         {
-            //throw new NotImplementedException();
+            var additionalParticipantInfo = MarshalToStructure<ParticipantInfoStringsAdditional>(packet);
+            Console.WriteLine("Additional Participant Info Receive: {0}, packet count: {1}", additionalParticipantInfo.sName, _statistics._participantInfoAdditionalPacketCount);
+
+            OnParticipantInfoStringsAdditionalReceived?.Invoke(additionalParticipantInfo);
         }
 
         private void ProcessPacketAsParticipantInfo(byte[] packet)
         {
-            //throw new NotImplementedException();
+            var participantInfo = MarshalToStructure<ParticipantInfoStrings>(packet);
+            Console.WriteLine("Participant Info Receive: {0}, packet count: {1}", participantInfo.sCarName, _statistics._participantInfoPacketCount);
+
+            OnParticipantInfoStringsReceived?.Invoke(participantInfo);
         }
 
         private T MarshalToStructure<T>(byte[] mem)
