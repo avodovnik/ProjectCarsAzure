@@ -51,8 +51,6 @@ namespace ProjectCars.Reader
             int frameType = frameTypeAndSequence & 3;
             int sequence = frameTypeAndSequence >> 2;
 
-            Console.WriteLine("Packet received, sequence: {0}", sequence);
-
             ProcessIncomingPacket(receiveBytes, frameType);
 
             stopwatch.Stop();
@@ -114,7 +112,6 @@ namespace ProjectCars.Reader
         private void ProcessPacketAsTelemetryData(byte[] packet)
         {
             var telemetryData = MarshalToStructure<TelemetryData>(packet);
-            Console.WriteLine("Telemetry packet received: {0}, total packet count: {1}", telemetryData.sThrottle, _statistics._telemetryPacketCount);
 
             // do something with this packet
             OnTelemetryDataReceived?.Invoke(telemetryData);
@@ -154,5 +151,6 @@ namespace ProjectCars.Reader
 
         private UdpClient Client { get { return _client; } }
         private IPEndPoint Endpoint { get { return _endpoint; } }
+        public TelemetryDataStatisticsContainer Statistics {  get { return _statistics; } }
     }
 }
