@@ -11,10 +11,10 @@ namespace ProjectCars.Reader
     /// </summary>
     public class TelemetryDataStatisticsContainer
     {
-        public int _packetCount = 0;
-        public int _unidentifierPacketCont = 0;
-        public int _telemetryPacketCount = 0;
-        public int _participantInfoPacketCount = 0;
-        public int _participantInfoAdditionalPacketCount = 0;
+        public long _packetCount = 0;
+        public long _unidentifierPacketCont = 0;
+        public long _telemetryPacketCount = 0;
+        public long _participantInfoPacketCount = 0;
+        public long _participantInfoAdditionalPacketCount = 0;
     }
 }
