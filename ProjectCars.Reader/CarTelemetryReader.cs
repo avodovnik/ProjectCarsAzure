@@ -1,5 +1,6 @@
 ﻿using ProjectCars.Shared;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -35,6 +36,8 @@ namespace ProjectCars.Reader
 
         public void ReceiveCallback(IAsyncResult ar)
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var state = (UdpState)ar.AsyncState;
             var client = state.Client;
 
@@ -52,6 +55,9 @@ namespace ProjectCars.Reader
 
             ProcessIncomingPacket(receiveBytes, frameType);
 
+            stopwatch.Stop();
+
+            System.Diagnostics.Trace.WriteLine(String.Format("It took {0}ms to process an incoming packet.", stopwatch.ElapsedMilliseconds));
             // Restart listening for udp data packages
             client.BeginReceive(new AsyncCallback(ReceiveCallback), ar.AsyncState);
         }
