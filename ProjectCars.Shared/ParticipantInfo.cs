@@ -5,14 +5,14 @@ namespace ProjectCars.Shared
 {
     public struct ParticipantInfo
     {
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 3)]
-        public short[] sWorldPosition;	// 0
-        public ushort sCurrentLapDistance;	// 6
-        public byte sRacePosition;	// 8
-        public byte sLapsCompleted;	// 9
-        public byte sCurrentLap;	// 10
-        public byte sSector;	// 11
-        public Single sLastSectorTime;	// 14
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        public short[] WorldPosition;	// 0
+        public ushort CurrentLapDistance;	// 6
+        public byte RacePosition;	// 8
+        public byte LapsCompleted;	// 9
+        public byte CurrentLap;	// 10
+        public byte Sector;	// 11
+        public Single LastSectorTime;	// 14
         // 16
     }
 }

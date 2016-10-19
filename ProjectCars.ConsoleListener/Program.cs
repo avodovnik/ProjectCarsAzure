@@ -3,6 +3,9 @@ using System.Diagnostics;
 using Microsoft.ServiceBus.Messaging;
 using System.Text;
 using System.Threading;
+using ProjectCars.Shared;
+using Newtonsoft.Json;
+
 
 namespace ProjectCars.ConsoleListener
 {
@@ -10,34 +13,62 @@ namespace ProjectCars.ConsoleListener
     {
         static void Main(string[] args)
         {
-            string eventHubName = "Cars";
-            string connectionString = Shared.CustomConfigurationManager.AppSettings["ProjectCars.EHConnectionString"];
-
+            string telemetryEventHubName = CustomConfigurationManager.AppSettings["ProjectCars.Telemetry.EHName"];
+            string telemetryconnectionString = CustomConfigurationManager.AppSettings["ProjectCars.Telemetry.EHConnectionString"];
+            string participantInfoEventHubName = CustomConfigurationManager.AppSettings["ProjectCars.ParticipantInfo.EHName"];
+            string participantInfoconnectionString = CustomConfigurationManager.AppSettings["ProjectCars.ParticipantInfo.EHConnectionString"];
             Console.WriteLine("Starting to listen...");
 
-            var listener = new ProjectCars.Reader.CarTelemetryReader();
+            var listener = new Reader.CarTelemetryReader();
 
             // call the listener
             listener.StartListening();
 
             // let's start up the event hub client
-            var ehClient = EventHubClient.CreateFromConnectionString(connectionString, eventHubName);
-
+            var ehTelemetryClient = EventHubClient.CreateFromConnectionString(telemetryconnectionString, telemetryEventHubName);
+            var ehParticipantInfoClient = EventHubClient.CreateFromConnectionString(participantInfoconnectionString, participantInfoconnectionString);
             var stopwatch = new Stopwatch();
 
+            //TODO manage session IDs better
+            Guid sessionId = Guid.NewGuid();
+
+            JsonConvert.DefaultSettings = () =>
+            {
+                JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
+                serializerSettings.Converters.Add(new ByteArrayConverter());
+                serializerSettings.Formatting = Formatting.None;
+
+                return serializerSettings;
+            };
+          
             new Thread(new ParameterizedThreadStart(DoMonitoring)).Start(listener);
 
-            listener.OnTelemetryDataReceived = (p =>
-            {
-                stopwatch.Restart();
+            //send all three types of packet to the same Event Hub, but use a different publisher for each.
+            listener.OnTelemetryDataReceived = (telemetry =>
+             SendAndMeasure(new SessionWrapper<TelemetryData>(telemetry, sessionId), ehTelemetryClient, stopwatch));
 
-                var s = Newtonsoft.Json.JsonConvert.SerializeObject(p, Newtonsoft.Json.Formatting.None);
-                ehClient.SendAsync(new EventData(Encoding.UTF8.GetBytes(s)));
-                stopwatch.Stop();
-            });
+            listener.OnParticipantInfoStringsReceived = (participantInfoStrings =>
+             SendAndMeasure(new SessionWrapper<ParticipantInfoStrings>(participantInfoStrings, sessionId), ehParticipantInfoClient, stopwatch));
 
+            listener.OnParticipantInfoStringsAdditionalReceived = (participantInfoStringsAdditional =>
+               SendAndMeasure(new SessionWrapper<ParticipantInfoStringsAdditional>(participantInfoStringsAdditional, sessionId), ehParticipantInfoClient, stopwatch));
 
             Console.ReadLine();
+        }
+
+        private static void SendAndMeasure<T>(SessionWrapper<T> data, EventHubClient ehClient, Stopwatch stopwatch) where T : struct
+        {
+            stopwatch.Restart();
+
+            string serializedObject = JsonConvert.SerializeObject(data);
+            EventData eventData = new EventData(Encoding.UTF8.GetBytes(serializedObject));
+
+            //use SessionId as partition key, in case of multiple sessions running
+            eventData.PartitionKey = data.SessionId.ToString();
+
+            ehClient.SendAsync(eventData);
+
+            stopwatch.Stop();
         }
 
         /// <summary>
@@ -47,10 +78,11 @@ namespace ProjectCars.ConsoleListener
         /// <param name="rawListener"></param>
         static void DoMonitoring(object rawListener)
         {
-            var listener = rawListener as ProjectCars.Reader.CarTelemetryReader;
+            var listener = rawListener as Reader.CarTelemetryReader;
             if (listener == null)
+            {
                 throw new InvalidCastException("The raw listener passed in isn't supported");
-
+            }
             var stopwatch = new Stopwatch();
 
             while (true)

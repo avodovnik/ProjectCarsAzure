@@ -1,6 +1,7 @@
 ﻿using ProjectCars.Shared;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -120,7 +121,7 @@ namespace ProjectCars.Reader
         private void ProcessPacketAsAdditionalParticipantInfo(byte[] packet)
         {
             var additionalParticipantInfo = MarshalToStructure<ParticipantInfoStringsAdditional>(packet);
-            Console.WriteLine("Additional Participant Info Receive: {0}, packet count: {1}", additionalParticipantInfo.sName, _statistics._participantInfoAdditionalPacketCount);
+            Console.WriteLine("Additional Participant Info Receive: {0}, packet count: {1}", additionalParticipantInfo.Names.First().Name, _statistics._participantInfoAdditionalPacketCount);
 
             OnParticipantInfoStringsAdditionalReceived?.Invoke(additionalParticipantInfo);
         }
@@ -128,7 +129,7 @@ namespace ProjectCars.Reader
         private void ProcessPacketAsParticipantInfo(byte[] packet)
         {
             var participantInfo = MarshalToStructure<ParticipantInfoStrings>(packet);
-            Console.WriteLine("Participant Info Receive: {0}, packet count: {1}", participantInfo.sCarName, _statistics._participantInfoPacketCount);
+            Console.WriteLine("Participant Info Receive: {0}, packet count: {1}", participantInfo.CarName, _statistics._participantInfoPacketCount);
 
             OnParticipantInfoStringsReceived?.Invoke(participantInfo);
         }
