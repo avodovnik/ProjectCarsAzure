@@ -79,68 +79,68 @@ namespace ProjectCars.Shared
 
         public Single sOdometerKM;	// 132
 
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 3)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public Single[] Orientation;	// 136
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 3)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public Single[] LocalVelocity;	// 148
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 3)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public Single[] WorldVelocity;	// 160
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 3)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public Single[] AngularVelocity;	// 172
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 3)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public Single[] LocalAcceleration;	// 184
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 3)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public Single[] WorldAcceleration;	// 196
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 3)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public Single[] ExtentsCentre;	// 208
 
         // Wheels / Tyres
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public byte[] TyreFlags;	// 220
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public byte[] Terrain;	// 224
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public Single[] TyreY;	// 228
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public Single[] TyreRPS;	// 244
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public Single[] TyreSlipSpeed;	// 260
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public byte[] TyreTemp;	// 276
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public byte[] TyreGrip;	// 280
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public Single[] TyreHeightAboveGround;	// 284
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public Single[] TyreLateralStiffness;	// 300
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public byte[] TyreWear;	// 316
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public byte[] BrakeDamage;	// 320
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public byte[] SuspensionDamage;	// 324
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public short[] BrakeTempCelsius;	// 328
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public ushort[] TyreTreadTemp;	// 336
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public ushort[] TyreLayerTemp;	// 344
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public ushort[] TyreCarcassTemp;	// 352
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public ushort[] TyreRimTemp;	// 360
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public ushort[] TyreInternalAirTemp;	// 368
 
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public Single[] WheelLocalPositionY;	// 376
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public Single[] RideHeight;	// 392
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public Single[] SuspensionTravel;	// 408
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public Single[] SuspensionVelocity;	// 424
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 4)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public ushort[] AirPressure;	// 440
 
         // Extras
@@ -164,7 +164,7 @@ namespace ProjectCars.Shared
 
         public float TrackLength;	// 1360
 
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 2)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
         public byte[] Wings;   // 1364
 
         public byte DPad;	// 1366
