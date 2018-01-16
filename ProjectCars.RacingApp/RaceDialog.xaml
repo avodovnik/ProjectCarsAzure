@@ -1,0 +1,24 @@
+﻿<ContentDialog
+x:Class="ProjectCars.RacingApp.Dialogs.RaceDialog"
+xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+
+Title="Start your race..."
+PrimaryButtonText="Save"
+CloseButtonText="Cancel"
+DefaultButton="Primary"
+    
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    CloseButtonClick="ContentDialog_CloseButtonClick">
+
+    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <TextBlock Text="To start your race, enter your name. Data will then get sent to the cloud, and much goodness will occur."
+TextWrapping="Wrap" />
+
+        <TextBox x:Name="txtRacerName" PlaceholderText="Your name here..." Margin="0 20 0 0"></TextBox>
+
+        <CheckBox Content="I agree with my data getting sent to Microsoft Azure" Margin="0 20 0 0"/>
+
+    </StackPanel>
+
+</ContentDialog>
