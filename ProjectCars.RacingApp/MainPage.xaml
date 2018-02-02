@@ -5,21 +5,21 @@
     xmlns:local="using:ProjectCars.RacingApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d" FontFamily="Segoe UI">
 
     <!--<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     </Grid>-->
 
     <NavigationView x:Name="NavView"
-                    ItemInvoked="NavView_ItemInvoked">
+                    ItemInvoked="NavView_ItemInvoked" Background="Black">
 
         <!--ItemInvoked="NavView_ItemInvoked"
                     SelectionChanged="NavView_SelectionChanged"
                     Loaded="NavView_Loaded"-->
         <NavigationView.MenuItems>
             <NavigationViewItem Icon="AllApps" Content="Start Race" Tag="start_race"/>
-            
+
             <!--<NavigationViewItem Icon="AllApps" Content="Sensor_1_2_3" Tag="sensor_1_2_3"/>
             <NavigationViewItem Icon="AllApps" Content="Sensor 2 4 1" Tag="sensor_2_4_1"/>
             <NavigationViewItem Icon="AllApps" Content="Sensor 2 2 1" Tag="sensor_2_2_1"/>-->
@@ -45,10 +45,10 @@
         </NavigationView.HeaderTemplate>
 
         <!--<NavigationView.PaneFooter>-->
-            
+
         <!--</NavigationView.PaneFooter>-->
 
-        <Frame x:Name="ContentFrame" Margin="24">
+        <Frame x:Name="ContentFrame" Margin="24" Background="Black">
             <Frame.ContentTransitions>
                 <TransitionCollection>
                     <NavigationThemeTransition>
@@ -58,6 +58,20 @@
                     </NavigationThemeTransition>
                 </TransitionCollection>
             </Frame.ContentTransitions>
+            <Ellipse HorizontalAlignment="Left" Height="300" Margin="402,222,0,329" VerticalAlignment="Center" Width="300" StrokeThickness="5">
+                <Ellipse.Stroke>
+                    <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                        <GradientStop Color="#FF594747"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Ellipse.Stroke>
+                <Ellipse.Fill>
+                    <LinearGradientBrush MappingMode="RelativeToBoundingBox">
+                        <GradientStop Color="#FF570606" Offset="0.015"/>
+                        <GradientStop Color="#FFB83131" Offset="1"/>
+                    </LinearGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
         </Frame>
 
     </NavigationView>
