@@ -20,10 +20,27 @@ namespace ProjectCars.RacingApp
         {
         }
 
-        [DefaultSettingValue(Value = 115200)]
-        public int Bauds
+        public string TelemetryEventHubName
         {
-            get { return Get<int>(); }
+            get { return Get<string>(); }
+            set { Set(value); }
+        }
+
+        public string TelemetryConnectionString
+        {
+            get { return Get<string>(); }
+            set { Set(value); }
+        }
+
+        public string ParticipantInfoEventHubName
+        {
+            get { return Get<string>(); }
+            set { Set(value); }
+        }
+
+        public string ParticipantInfoconnectionString
+        {
+            get { return Get<string>(); }
             set { Set(value); }
         }
     }

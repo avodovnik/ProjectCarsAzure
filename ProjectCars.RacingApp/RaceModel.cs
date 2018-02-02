@@ -1,9 +1,11 @@
-﻿using System;
+﻿using ProjectCars.UniversalShared;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ProjectCars.UniversalReader;
 
 namespace ProjectCars.RacingApp
 {
@@ -16,6 +18,8 @@ namespace ProjectCars.RacingApp
 
     public class RaceModel
     {
+        private CarTelemetryReader _listener;
+
         public static RaceModel Current
         {
             get
@@ -36,16 +40,21 @@ namespace ProjectCars.RacingApp
         {
             this.RaceState = RaceState.Racing;
             System.Diagnostics.Debug.WriteLine("Race Started");
+            this.SetupTheListener();
+
         }
+
 
         public void RaceAborted()
         {
+            _listener.StopListening();
             this.RaceState = RaceState.Finished;
             System.Diagnostics.Debug.WriteLine("Race Aborted");
         }
 
         public void RaceFinished()
         {
+            _listener.StopListening();
             this.RaceState = RaceState.Finished;
             System.Diagnostics.Debug.WriteLine("Race Finished");
         }
@@ -58,19 +67,23 @@ namespace ProjectCars.RacingApp
         private void SetupTheListener()
         {
 
-            //string telemetryEventHubName = CustomConfigurationManager.AppSettings["ProjectCars.Telemetry.EHName"];
-            //string telemetryconnectionString = CustomConfigurationManager.AppSettings["ProjectCars.Telemetry.EHConnectionString"];
-            //string participantInfoEventHubName = CustomConfigurationManager.AppSettings["ProjectCars.ParticipantInfo.EHName"];
-            //string participantInfoconnectionString = CustomConfigurationManager.AppSettings["ProjectCars.ParticipantInfo.EHConnectionString"];
+            string telemetryEventHubName = App.Settings.TelemetryEventHubName;
+            string telemetryconnectionString = App.Settings.TelemetryConnectionString;
+            string participantInfoEventHubName = App.Settings.ParticipantInfoEventHubName;
+            string participantInfoconnectionString = App.Settings.ParticipantInfoconnectionString;
 
-            //Debug.WriteLine("Starting to listen...");
+            Debug.WriteLine("Starting to listen...");
 
-            //var listener = new Reader.CarTelemetryReader();
+            _listener = new UniversalReader.CarTelemetryReader();
 
-            //// call the listener
-            //listener.StartListening();
+            Task.Run(() => _listener.StartListeningAsync());
+            //Task.Run(_listener.StartListeningAsync();
 
-            //// let's start up the event hub client
+
+
+            //listener.OnTelemetryDataReceived = (telemetry => )
+
+            ////// let's start up the event hub client
             //var ehTelemetryClient = EventHubClient.CreateFromConnectionString(telemetryconnectionString, telemetryEventHubName);
             //var ehParticipantInfoClient = EventHubClient.CreateFromConnectionString(participantInfoconnectionString, participantInfoconnectionString);
             //var stopwatch = new Stopwatch();
@@ -89,7 +102,7 @@ namespace ProjectCars.RacingApp
 
             //new Thread(new ParameterizedThreadStart(DoMonitoring)).Start(listener);
 
-            ////send all three types of packet to the same Event Hub, but use a different publisher for each.
+            //send all three types of packet to the same Event Hub, but use a different publisher for each.
             //listener.OnTelemetryDataReceived = (telemetry =>
             // SendAndMeasure(new SessionWrapper<TelemetryData>(telemetry, sessionId), ehTelemetryClient, stopwatch));
 
@@ -99,6 +112,9 @@ namespace ProjectCars.RacingApp
             //listener.OnParticipantInfoStringsAdditionalReceived = (participantInfoStringsAdditional =>
             //   SendAndMeasure(new SessionWrapper<ParticipantInfoStringsAdditional>(participantInfoStringsAdditional, sessionId), ehParticipantInfoClient, stopwatch));
 
+            _listener.OnTelemetryDataReceived = (telemetry =>
+                System.Diagnostics.Debug.WriteLine(String.Format("Telemetry data received, speed: {0}", telemetry.Speed))
+            );
         }
     }
 }

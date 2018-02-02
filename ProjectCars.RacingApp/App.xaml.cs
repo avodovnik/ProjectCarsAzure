@@ -24,6 +24,19 @@ namespace ProjectCars.RacingApp
     {
         public RaceModel RaceModel { get; set; }
 
+        private Settings _settingsInstance;
+        public static Settings Settings
+        {
+            get
+            {
+                if((App.Current as App)._settingsInstance == null)
+                {
+                    (App.Current as App)._settingsInstance = new Settings();
+                }
+
+                return (App.Current as App)._settingsInstance;
+            }
+        }
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
