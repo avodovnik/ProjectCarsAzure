@@ -36,7 +36,6 @@ namespace ProjectCars.UniversalReader
             {
                 while (_listenForPackets)
                 {
-                    System.Diagnostics.Debug.WriteLine("Receive async called...");
                     var result = await Client.ReceiveAsync();
                     //ReceiveCallback(result);
                     ParsePacket(result);
