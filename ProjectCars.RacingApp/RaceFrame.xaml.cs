@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Media.Animation;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -27,7 +28,7 @@ namespace ProjectCars.RacingApp
         public RaceFrame()
         {
             this.InitializeComponent();
-            
+
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -35,9 +36,25 @@ namespace ProjectCars.RacingApp
             this.textRacerName.Text = e.Parameter.ToString();
             base.OnNavigatedTo(e);
 
-            RaceModel.Current.RaceStarted();
+            RaceModel.Current.RaceStarted(PacketReceived);
         }
 
+
+        private void PacketReceived(UniversalShared.TelemetryData data)
+        {
+            // convert speed to mph
+
+            //var kph = (data.Speed * 0.001f) * 3600;
+            var mph = (data.Speed * 0.00062137f) * 3600;
+
+            SetSpeedGauge(mph);
+
+            var gear = data.GearNumGears & 15;
+            var numOfGears = data.GearNumGears >> 4;
+
+            SetGearGauge(gear);
+            SetRPMGauge(data.Rpm);
+        }
 
         private async void btnStopRace_Click(object sender, RoutedEventArgs e)
         {
@@ -90,18 +107,38 @@ namespace ProjectCars.RacingApp
 
         public void SetRPMGauge(double RPM)
         {
-            RPMNeedleTransform.Rotation = (RPM * 0.0225) - 45;
+            Task.Run(async () =>
+            {
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    RPMNeedleTransform.Rotation = (RPM * 0.0225) - 45;
+                });
+            });
         }
         public void SetSpeedGauge(double speedMPH)
         {
-            SpeedNeedleTransform.Rotation = (speedMPH * 1.125) - 45;
-            SpeedTxt.Text = speedMPH.ToString();
-        }
-        public void SetGearGauge(double Gear)
-        {
-            GearTxt.Text = Gear.ToString();
+            speedMPH = Math.Round(speedMPH, 0);
+
+            Task.Run(async () =>
+            {
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    SpeedNeedleTransform.Rotation = (speedMPH * 1.125) - 45;
+                    SpeedTxt.Text = speedMPH.ToString();
+                });
+            });
         }
 
+        public void SetGearGauge(double Gear)
+        {
+            Task.Run(async () =>
+             {
+                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                 {
+                     GearTxt.Text = Gear.ToString();
+                 });
+             });
+        }
 
     }
 }

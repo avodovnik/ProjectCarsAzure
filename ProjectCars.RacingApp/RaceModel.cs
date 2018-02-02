@@ -19,6 +19,7 @@ namespace ProjectCars.RacingApp
     public class RaceModel
     {
         private CarTelemetryReader _listener;
+        private Task _task;
 
         public static RaceModel Current
         {
@@ -36,27 +37,32 @@ namespace ProjectCars.RacingApp
 
         public string DriverName { get; }
 
-        public void RaceStarted()
+        public void RaceStarted(Action<TelemetryData> callbackAction)
         {
             this.RaceState = RaceState.Racing;
             System.Diagnostics.Debug.WriteLine("Race Started");
-            this.SetupTheListener();
+            this.SetupTheListener(callbackAction);
 
         }
 
 
         public void RaceAborted()
         {
-            _listener.StopListening();
+            StopListening();
             this.RaceState = RaceState.Finished;
             System.Diagnostics.Debug.WriteLine("Race Aborted");
         }
 
         public void RaceFinished()
         {
-            _listener.StopListening();
+            StopListening();
             this.RaceState = RaceState.Finished;
             System.Diagnostics.Debug.WriteLine("Race Finished");
+        }
+
+        private void StopListening()
+        {
+            _listener.StopListening();
         }
 
         public RaceState RaceState
@@ -64,7 +70,7 @@ namespace ProjectCars.RacingApp
             get; private set;
         }
 
-        private void SetupTheListener()
+        private void SetupTheListener(Action<TelemetryData> callback)
         {
 
             string telemetryEventHubName = App.Settings.TelemetryEventHubName;
@@ -76,12 +82,11 @@ namespace ProjectCars.RacingApp
 
             _listener = new UniversalReader.CarTelemetryReader();
 
-            Task.Run(() => _listener.StartListeningAsync());
-            //Task.Run(_listener.StartListeningAsync();
+            _task = Task.Run(() => _listener.StartListeningAsync());
 
-
-
-            //listener.OnTelemetryDataReceived = (telemetry => )
+            _listener.OnTelemetryDataReceived = callback;
+            
+            ///istener.OnTelemetryDataReceived = (telemetry => )
 
             ////// let's start up the event hub client
             //var ehTelemetryClient = EventHubClient.CreateFromConnectionString(telemetryconnectionString, telemetryEventHubName);
@@ -112,9 +117,9 @@ namespace ProjectCars.RacingApp
             //listener.OnParticipantInfoStringsAdditionalReceived = (participantInfoStringsAdditional =>
             //   SendAndMeasure(new SessionWrapper<ParticipantInfoStringsAdditional>(participantInfoStringsAdditional, sessionId), ehParticipantInfoClient, stopwatch));
 
-            _listener.OnTelemetryDataReceived = (telemetry =>
-                System.Diagnostics.Debug.WriteLine(String.Format("Telemetry data received, speed: {0}", telemetry.Speed))
-            );
+            //_listener.OnTelemetryDataReceived = (telemetry =>
+            //    System.Diagnostics.Debug.WriteLine(String.Format("Telemetry data received, speed: {0}", telemetry.Speed))
+            //);
         }
     }
 }

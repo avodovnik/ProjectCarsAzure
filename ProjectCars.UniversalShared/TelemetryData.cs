@@ -167,6 +167,6 @@ namespace ProjectCars.UniversalShared
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
         public byte[] Wings;   // 1364
 
-        public byte DPad;	// 1366
+        public byte DPad;   // 1366
     }
 }

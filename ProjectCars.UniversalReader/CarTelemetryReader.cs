@@ -22,8 +22,6 @@ namespace ProjectCars.UniversalReader
 
         public CarTelemetryReader()
         {
-            _client = new UdpClient(Endpoint);
-            _client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
         }
 
         public Action<TelemetryData> OnTelemetryDataReceived { get; set; }
@@ -32,15 +30,25 @@ namespace ProjectCars.UniversalReader
 
         public async void StartListeningAsync()
         {
+            if (_client == null)
+            {
+                _client = new UdpClient(Endpoint);
+                _client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            }
+
             try
             {
-                while (_listenForPackets)
+                using (_client)
                 {
-                    var result = await Client.ReceiveAsync();
-                    //ReceiveCallback(result);
-                    ParsePacket(result);
+                    while (_listenForPackets)
+                    {
+                        var result = await Client.ReceiveAsync();
+                        //ReceiveCallback(result);
+                        ParsePacket(result);
+                    }
                 }
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
@@ -49,6 +57,9 @@ namespace ProjectCars.UniversalReader
         public void StopListening()
         {
             _listenForPackets = false;
+            _client.Client.Shutdown(SocketShutdown.Both);
+            _client.Dispose();
+            _client = null;
         }
 
         private bool _listenForPackets = true;
@@ -56,7 +67,7 @@ namespace ProjectCars.UniversalReader
         private void ParsePacket(UdpReceiveResult result)
         {
             Debug.WriteLine("Parse Packet called.");
-            if(result != null)
+            if (result == null)
             {
                 return;
             }
@@ -80,7 +91,7 @@ namespace ProjectCars.UniversalReader
             // Restart listening for udp data packages
         }
 
-   
+
         private void ProcessIncomingPacket(byte[] receiveBytes, int frameType)
         {
             // increase the packet count statistic
@@ -159,7 +170,7 @@ namespace ProjectCars.UniversalReader
             var handle = GCHandle.Alloc(mem, GCHandleType.Pinned);
             try
             {
-                var data = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(T));
+                var data = Marshal.PtrToStructure<T>(handle.AddrOfPinnedObject());
                 return data;
             }
             finally
