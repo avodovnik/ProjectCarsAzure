@@ -1,11 +1,11 @@
 ﻿using ProjectCars.UniversalShared;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProjectCars.UniversalReader;
+using Microsoft.Azure.EventHubs;
+using Newtonsoft.Json;
 
 namespace ProjectCars.RacingApp
 {
@@ -20,6 +20,7 @@ namespace ProjectCars.RacingApp
     {
         private CarTelemetryReader _listener;
         private Task _task;
+        private Guid _id;
 
         public static RaceModel Current
         {
@@ -33,6 +34,7 @@ namespace ProjectCars.RacingApp
         {
             this.DriverName = driverName;
             this.RaceState = RaceState.Starting;
+            this._id = Guid.NewGuid();
         }
 
         public string DriverName { get; }
@@ -70,6 +72,7 @@ namespace ProjectCars.RacingApp
             get; private set;
         }
 
+
         private void SetupTheListener(Action<TelemetryData> callback)
         {
 
@@ -84,42 +87,68 @@ namespace ProjectCars.RacingApp
 
             _task = Task.Run(() => _listener.StartListeningAsync());
 
-            _listener.OnTelemetryDataReceived = callback;
+            _listener.OnTelemetryDataReceived = (telemetry => callback(telemetry));
+
+            return;       
             
-            ///istener.OnTelemetryDataReceived = (telemetry => )
 
-            ////// let's start up the event hub client
-            //var ehTelemetryClient = EventHubClient.CreateFromConnectionString(telemetryconnectionString, telemetryEventHubName);
-            //var ehParticipantInfoClient = EventHubClient.CreateFromConnectionString(participantInfoconnectionString, participantInfoconnectionString);
-            //var stopwatch = new Stopwatch();
+            var connectionStringBuilder = new EventHubsConnectionStringBuilder(telemetryconnectionString)
+            {
+                EntityPath = telemetryEventHubName
+            };
 
-            ////TODO manage session IDs better
-            //Guid sessionId = Guid.NewGuid();
+            var ehConnStringParticipants = new EventHubsConnectionStringBuilder(participantInfoconnectionString)
+            {
+                EntityPath = participantInfoEventHubName
+            };
 
-            //JsonConvert.DefaultSettings = () =>
-            //{
-            //    JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
-            //    serializerSettings.Converters.Add(new ByteArrayConverter());
-            //    serializerSettings.Formatting = Formatting.None;
+            // let's start up the event hub client
+            var ehTelemetryClient = EventHubClient.CreateFromConnectionString(connectionStringBuilder.ToString());
+            var ehParticipantClient = EventHubClient.CreateFromConnectionString(participantInfoconnectionString.ToString());
 
-            //    return serializerSettings;
-            //};
+            var stopwatch = new Stopwatch();
 
-            //new Thread(new ParameterizedThreadStart(DoMonitoring)).Start(listener);
+            var sessionId = _id;
+
+            JsonConvert.DefaultSettings = () =>
+            {
+                JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
+                serializerSettings.Converters.Add(new ByteArrayConverter());
+                serializerSettings.Formatting = Formatting.None;
+
+                return serializerSettings;
+            };
 
             //send all three types of packet to the same Event Hub, but use a different publisher for each.
-            //listener.OnTelemetryDataReceived = (telemetry =>
-            // SendAndMeasure(new SessionWrapper<TelemetryData>(telemetry, sessionId), ehTelemetryClient, stopwatch));
+            _listener.OnTelemetryDataReceived = (telemetry =>
+            {
+                SendAndMeasure(new SessionWrapper<TelemetryData>(telemetry, sessionId), ehTelemetryClient, stopwatch);
+                if (callback != null)
+                {
+                    callback(telemetry);
+                }
+            });
 
-            //listener.OnParticipantInfoStringsReceived = (participantInfoStrings =>
-            // SendAndMeasure(new SessionWrapper<ParticipantInfoStrings>(participantInfoStrings, sessionId), ehParticipantInfoClient, stopwatch));
+            _listener.OnParticipantInfoStringsReceived = (participantInfoStrings =>
+             SendAndMeasure(new SessionWrapper<ParticipantInfoStrings>(participantInfoStrings, sessionId), ehParticipantClient, stopwatch));
 
-            //listener.OnParticipantInfoStringsAdditionalReceived = (participantInfoStringsAdditional =>
-            //   SendAndMeasure(new SessionWrapper<ParticipantInfoStringsAdditional>(participantInfoStringsAdditional, sessionId), ehParticipantInfoClient, stopwatch));
+            _listener.OnParticipantInfoStringsAdditionalReceived = (participantInfoStringsAdditional =>
+               SendAndMeasure(new SessionWrapper<ParticipantInfoStringsAdditional>(participantInfoStringsAdditional, sessionId), ehParticipantClient, stopwatch));
+        }
 
-            //_listener.OnTelemetryDataReceived = (telemetry =>
-            //    System.Diagnostics.Debug.WriteLine(String.Format("Telemetry data received, speed: {0}", telemetry.Speed))
-            //);
+        private static void SendAndMeasure<T>(SessionWrapper<T> data, EventHubClient ehClient, Stopwatch stopwatch) where T : struct
+        {
+            stopwatch.Restart();
+
+            string serializedObject = JsonConvert.SerializeObject(data);
+            EventData eventData = new EventData(Encoding.UTF8.GetBytes(serializedObject));
+
+            //use SessionId as partition key, in case of multiple sessions running
+            //eventData.SystemProperties.PartitionKey = data.SessionId.ToString();
+
+            ehClient.SendAsync(eventData);
+
+            stopwatch.Stop();
         }
     }
 }
