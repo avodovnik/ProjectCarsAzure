@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Media.Animation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -26,6 +27,7 @@ namespace ProjectCars.RacingApp
         public RaceFrame()
         {
             this.InitializeComponent();
+            
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -70,5 +72,36 @@ namespace ProjectCars.RacingApp
         {
             Frame.Navigate(typeof(SummaryFrame));
         }
+
+        private void RPMSlider_ValueChanged(object sender, RoutedEventArgs e)
+        {
+            SetRPMGauge(RPMSlider.Value);
+        }
+
+        private void SpeedSlider_ValueChanged(object sender, RoutedEventArgs e)
+        {
+            SetSpeedGauge(SpeedSlider.Value);
+        }
+
+        private void GearSlider_ValueChanged(object sender, RoutedEventArgs e)
+        {
+            SetGearGauge(GearSlider.Value);
+        }
+
+        public void SetRPMGauge(double RPM)
+        {
+            RPMNeedleTransform.Rotation = (RPM * 0.0225) - 45;
+        }
+        public void SetSpeedGauge(double speedMPH)
+        {
+            SpeedNeedleTransform.Rotation = (speedMPH * 1.125) - 45;
+            SpeedTxt.Text = speedMPH.ToString();
+        }
+        public void SetGearGauge(double Gear)
+        {
+            GearTxt.Text = Gear.ToString();
+        }
+
+
     }
 }

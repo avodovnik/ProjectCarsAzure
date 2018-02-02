@@ -25,8 +25,8 @@ namespace ProjectCars.ConsoleListener
             listener.StartListening();
 
             // let's start up the event hub client
-            var ehTelemetryClient = EventHubClient.CreateFromConnectionString(telemetryconnectionString, telemetryEventHubName);
-            var ehParticipantInfoClient = EventHubClient.CreateFromConnectionString(participantInfoconnectionString, participantInfoconnectionString);
+           // var ehTelemetryClient = EventHubClient.CreateFromConnectionString(telemetryconnectionString, telemetryEventHubName);
+           // var ehParticipantInfoClient = EventHubClient.CreateFromConnectionString(participantInfoconnectionString, participantInfoconnectionString);
             var stopwatch = new Stopwatch();
 
             //TODO manage session IDs better
